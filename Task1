@@ -1,0 +1,52 @@
+import scala.collection.mutable.Map
+import io.Source
+
+
+object Task1{
+
+  def main(args: Array[String]) = {
+    val result = Source.fromFile("C:/Users/Marcin/Desktop/web-Stanford.txt").getLines.map(mapFunction).reduce(reduceFunction)
+    println()
+    for(v<-result){
+      print(v._1)
+      print(" ")
+      print(v._2._1)
+      print(" ")
+      print(v._2._2)
+      print(" ")
+      println()
+    }
+
+  }
+
+  def mapFunction(arg:String):Map[Int,(Int,Int)]={
+    val nodes = arg.split("\t").map((x)=>x.toInt).toArray
+    val mapa = Map[Int,(Int,Int)]()
+    val v0 = nodes(0)
+    val v1 = nodes(1)
+    mapa+=((v0,(0,1)))
+
+    if(mapa.contains(v1)){
+      val old = mapa(v1)
+      mapa.update(v1,(1,1))
+    }else{
+      mapa+=(v1->(1,0))
+    }
+    return mapa
+  }
+
+  def reduceFunction(x:Map[Int,(Int,Int)],y:Map[Int,(Int,Int)]):Map[Int,(Int,Int)]={
+
+    for(v<-y.toArray){
+      if(x.contains(v._1)){
+        val old = x(v._1)
+        x.update(v._1,(old._1+v._2._1,old._2+v._2._2))
+      }else{
+        x.addOne(v)
+      }
+    }
+    return x
+
+  }
+
+}
